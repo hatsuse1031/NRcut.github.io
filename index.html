@@ -25,6 +25,11 @@
             min-height: 36px;
             touch-action: manipulation;
         }
+        /* 特定属性カット用の行のみ、ボタン拡大に合わせて高さを調整 */
+        .attr-row-special {
+            min-height: 48px;
+        }
+        
         .effect-row.normal-border { border-color: #1e293b; }
         .effect-row.active {
             border-color: #4d98eb;
@@ -69,7 +74,7 @@
 
         .attr-btn-sm {
             width: 100%;
-            height: 24px;
+            height: 25px; /* 24px -> 25px */
             font-size: 10px;
             font-weight: 900;
             background-color: #0f172a;
@@ -83,7 +88,7 @@
         
         .attr-minus-btn {
             width: 100%;
-            height: 18px;
+            height: 19px; /* 18px -> 19px */
             font-size: 9px;
             background-color: #020617;
             border: 1px solid #1e293b;
@@ -307,10 +312,11 @@
                 
                 group.rates.forEach(rate => {
                     const row = document.createElement('div');
-                    row.className = 'effect-row normal-border flex items-center justify-between p-0.5 rounded bg-[#020617]';
+                    const isSpecial = group.isMulti;
+                    row.className = `effect-row normal-border flex items-center justify-between p-0.5 rounded bg-[#020617] ${isSpecial ? 'attr-row-special' : ''}`;
                     row.id = `row-${group.id}-${rate}`;
                     
-                    if (group.isMulti) {
+                    if (isSpecial) {
                         const labelArea = document.createElement('div');
                         labelArea.className = 'pl-2 flex items-center'; 
                         labelArea.innerHTML = `<span class="text-[12px] font-bold text-white">${rate}%</span>`;
