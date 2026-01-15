@@ -25,7 +25,7 @@
             border: 2px solid transparent; 
             background-clip: padding-box;
             transition: all 0.2s ease;
-            min-height: 38px; /* 縮めすぎを緩和 */
+            min-height: 36px; /* 38pxからわずかに短縮して収まりを改善 */
         }
         .effect-row.normal-border {
             border-color: #1e293b;
@@ -40,8 +40,8 @@
             border-color: #ef4444 !important;
         }
         .control-btn {
-            width: 34px;
-            height: 34px;
+            width: 32px; /* 34pxから微調整 */
+            height: 32px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -50,16 +50,16 @@
             color: #fff;
             font-weight: bold;
             border-radius: 4px;
-            font-size: 14px;
+            font-size: 13px;
         }
         /* 属性用小型ボタン */
         .attr-btn {
             flex-grow: 1;
-            min-width: 38px;
-            padding: 0 2px;
-            height: 30px;
-            font-size: 11px;
-            margin-left: 4px;
+            min-width: 36px;
+            padding: 0 1px;
+            height: 28px;
+            font-size: 10px;
+            margin-left: 3px;
             font-weight: 900;
             white-space: nowrap;
             background-color: #0f172a;
@@ -72,10 +72,10 @@
         .color-light { color: #facc15; }
         .color-holy  { color: #f3f4f6; }
 
-        .attr-btn.active-magic { background-color: #1e3a8a; border-color: #3b82f6; box-shadow: 0 0 12px rgba(59, 130, 246, 0.4); }
-        .attr-btn.active-fire  { background-color: #450a0a; border-color: #ef4444; box-shadow: 0 0 12px rgba(239, 68, 68, 0.4); }
-        .attr-btn.active-light { background-color: #422006; border-color: #eab308; box-shadow: 0 0 12px rgba(234, 179, 8, 0.4); }
-        .attr-btn.active-holy  { background-color: #334155; border-color: #9ca3af; box-shadow: 0 0 12px rgba(156, 163, 175, 0.4); }
+        .attr-btn.active-magic { background-color: #1e3a8a; border-color: #3b82f6; box-shadow: 0 0 8px rgba(59, 130, 246, 0.4); }
+        .attr-btn.active-fire  { background-color: #450a0a; border-color: #ef4444; box-shadow: 0 0 8px rgba(239, 68, 68, 0.4); }
+        .attr-btn.active-light { background-color: #422006; border-color: #eab308; box-shadow: 0 0 8px rgba(234, 179, 8, 0.4); }
+        .attr-btn.active-holy  { background-color: #334155; border-color: #9ca3af; box-shadow: 0 0 8px rgba(156, 163, 175, 0.4); }
 
         .control-btn:active:not(:disabled) { opacity: 0.7; }
         .control-btn:disabled {
@@ -115,8 +115,8 @@
         }
 
         .page-btn {
-            width: 52px;
-            height: 36px;
+            width: 50px;
+            height: 34px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -166,36 +166,36 @@
             </div>
 
             <div id="stats-area" class="grid grid-cols-5 gap-1 mb-1 hidden">
-                <div class="attr-card py-1.5 text-center border rounded">
+                <div class="attr-card py-1 text-center border rounded">
                     <div class="text-[9px] text-slate-400 font-bold">物理</div>
                     <div id="stat-phys" class="text-[12px] font-bold text-white">0%</div>
                 </div>
-                <div class="attr-card py-1.5 text-center border rounded">
+                <div class="attr-card py-1 text-center border rounded">
                     <div class="text-[9px] text-blue-400 font-bold">魔力</div>
                     <div id="stat-magic" class="text-[12px] font-bold text-white">0%</div>
                 </div>
-                <div class="attr-card py-1.5 text-center border rounded">
+                <div class="attr-card py-1 text-center border rounded">
                     <div class="text-[9px] text-red-400 font-bold">炎</div>
                     <div id="stat-fire" class="text-[12px] font-bold text-white">0%</div>
                 </div>
-                <div class="attr-card py-1.5 text-center border rounded">
+                <div class="attr-card py-1 text-center border rounded">
                     <div class="text-[9px] text-yellow-400 font-bold">雷</div>
                     <div id="stat-light" class="text-[12px] font-bold text-white">0%</div>
                 </div>
-                <div class="attr-card py-1.5 text-center border rounded">
+                <div class="attr-card py-1 text-center border rounded">
                     <div class="text-[9px] text-slate-200 font-bold">聖</div>
                     <div id="stat-holy" class="text-[12px] font-bold text-white">0%</div>
                 </div>
             </div>
             
             <div class="flex gap-2">
-                <button onclick="resetAll()" class="flex-grow py-2 text-[10px] bg-[#0f172a] border border-[#1e293b] rounded text-slate-400 hover:text-[#4d98eb] hover:border-[#4d98eb] uppercase font-bold tracking-widest transition-all">Reset All</button>
+                <button onclick="resetAll()" class="flex-grow py-1.5 text-[10px] bg-[#0f172a] border border-[#1e293b] rounded text-slate-400 hover:text-[#4d98eb] hover:border-[#4d98eb] uppercase font-bold tracking-widest transition-all">Reset All</button>
                 <button id="next-page-btn" onclick="nextPage()" class="page-btn hidden">1/2</button>
             </div>
         </header>
 
         <!-- メインエリア -->
-        <main id="effect-groups" class="mt-2 grid grid-cols-2 gap-x-2 gap-y-2 pb-10">
+        <main id="effect-groups" class="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1.5 pb-10">
             <!-- Groups injected by JS -->
         </main>
     </div>
@@ -312,10 +312,10 @@
                 if (!isLiteMode && group.page !== currentPage) return;
 
                 const section = document.createElement('section');
-                section.className = `bg-dark-night p-1.5 rounded-lg border border-[#4d98eb]/10 shadow-xl ${(!isLiteMode && group.isMulti) ? 'full-width-section' : ''}`;
+                section.className = `bg-dark-night p-1 rounded-lg border border-[#4d98eb]/10 shadow-xl ${(!isLiteMode && group.isMulti) ? 'full-width-section' : ''}`;
                 
                 const title = document.createElement('h2');
-                title.className = 'text-[10px] theme-blue mb-1.5 font-bold border-l-2 border-[#4d98eb] pl-2';
+                title.className = 'text-[10px] theme-blue mb-1 font-bold border-l-2 border-[#4d98eb] pl-2';
                 title.innerText = group.name;
                 section.appendChild(title);
 
@@ -330,7 +330,7 @@
                     if (group.isMulti) {
                         const labelArea = document.createElement('div');
                         labelArea.className = 'pl-2 flex items-center pr-1'; 
-                        labelArea.innerHTML = `<span class="text-[13px] font-bold text-white">${rate}%</span>`;
+                        labelArea.innerHTML = `<span class="text-[12px] font-bold text-white">${rate}%</span>`;
                         row.appendChild(labelArea);
 
                         const controls = document.createElement('div');
@@ -371,7 +371,7 @@
                         label.innerText = `${rate}%`;
 
                         const countDisplay = document.createElement('span');
-                        countDisplay.className = 'text-[13px] font-black ml-2 w-6 text-left';
+                        countDisplay.className = 'text-[12px] font-black ml-1.5 w-6 text-left';
                         countDisplay.id = `count-${group.id}-${rate}`;
 
                         labelArea.appendChild(label);
@@ -481,7 +481,7 @@
                         ['magic', 'fire', 'light', 'holy'].forEach(attr => {
                             const btn = document.getElementById(`btn-${group.id}-${rate}-${attr}`);
                             const attrCount = rowSelections.filter(s => s.target === attr).length;
-                            // 属性カウント表示を復元
+                            // 表示を復元
                             btn.innerText = attrCount > 0 ? `${attrBaseLabels[attr]}×${attrCount}` : attrBaseLabels[attr];
                             btn.classList.toggle(`active-${attr}`, attrCount > 0);
                         });
@@ -489,7 +489,7 @@
                     } else {
                         const display = document.getElementById(`count-${group.id}-${rate}`);
                         display.innerText = count === 0 ? '' : `×${count}`;
-                        display.className = count > 0 ? 'text-[13px] font-black ml-2 w-6 theme-blue' : 'text-[13px] ml-2 w-6 text-slate-800';
+                        display.className = count > 0 ? 'text-[12px] font-black ml-1.5 w-6 theme-blue' : 'text-[12px] ml-1.5 w-6 text-slate-800';
                         document.getElementById(`minus-${group.id}-${rate}`).disabled = count === 0;
                     }
                     row.classList.toggle('duplicate-error', (group.type === 'limit' && duplicateRates.includes(rate) && count > 0));
