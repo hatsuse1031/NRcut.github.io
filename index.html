@@ -473,7 +473,7 @@
 
             const warningEl = document.getElementById('duplicate-warning');
             if (duplicateRates.length > 0 || is24Error) {
-                warningEl.innerText = is24Error ? "⚠️ 24%が重複：1つ分のみ適用中" : "⚠️ 同一数値が重複：1つ分のみ適用中";
+                warningEl.innerText = "⚠️ 重複不可：1つ分のみ適用中";
                 warningEl.className = "w-full bg-red-950 border-red-500 py-0.5 text-center text-[10px] text-red-200 rounded font-bold border";
             } else {
                 warningEl.innerText = "重複なし";
