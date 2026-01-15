@@ -51,6 +51,7 @@
             border-radius: 4px;
             font-size: 14px;
         }
+        /* 属性用小型ボタン */
         .attr-btn {
             flex-grow: 1;
             min-width: 38px;
@@ -75,7 +76,9 @@
         .attr-btn.active-light { background-color: #422006; border-color: #eab308; box-shadow: 0 0 12px rgba(234, 179, 8, 0.4); }
         .attr-btn.active-holy  { background-color: #334155; border-color: #9ca3af; box-shadow: 0 0 12px rgba(156, 163, 175, 0.4); }
 
-        .control-btn:active:not(:disabled) { opacity: 0.7; }
+        .control-btn:active:not(:disabled) {
+            opacity: 0.7;
+        }
         .control-btn:disabled {
             opacity: 0.15;
             cursor: not-allowed;
@@ -84,16 +87,27 @@
         }
         .attr-card {
             background: linear-gradient(145deg, #0f172a, #020617);
-            border: 1px solid #1e293b;
+            border-color: #1e293b;
         }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
             25% { transform: translateX(-2px); }
             75% { transform: translateX(2px); }
         }
-        .limit-reached { animation: shake 0.2s ease-in-out 0s 2; }
+        .limit-reached {
+            animation: shake 0.2s ease-in-out 0s 2;
+        }
+        #warning-container {
+            height: 24px;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
         
-        .full-width-section { grid-column: span 2; }
+        .full-width-section {
+            grid-column: span 2;
+        }
 
         .toggle-active {
             background-color: rgba(77, 152, 235, 0.15);
@@ -115,28 +129,14 @@
             border-radius: 4px;
             transition: all 0.2s;
         }
-        
-        /* Layout for PC */
-        @media (min-width: 1024px) {
-            .app-container {
-                display: grid;
-                grid-template-columns: 1fr 350px;
-                gap: 2rem;
-                max-width: 1200px;
-                margin: 0 auto;
-            }
-            .sticky-panel {
-                position: sticky;
-                top: 1rem;
-                height: fit-content;
-            }
-            #effect-groups {
-                display: grid;
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            #next-page-btn { display: none !important; }
-            .pc-guide { display: block !important; }
+        .page-btn:active:not(:disabled) {
+            background-color: #4d98eb;
+            color: #fff;
+        }
+
+        /* ページ切替時のガタつき防止 */
+        #effect-groups {
+            min-height: 440px; 
         }
 
         /* Modal Styles */
@@ -152,117 +152,112 @@
         }
     </style>
 </head>
-<body class="p-4 overflow-y-auto">
+<body class="p-2 sm:p-4 overflow-y-auto">
 
-    <div class="app-container">
-        <!-- Main Panel (Effects) -->
-        <div class="main-panel">
-            <header class="mb-4">
-                <div class="flex justify-between items-center mb-4">
-                    <h1 class="text-xs theme-blue uppercase tracking-[0.2em] font-bold">Nightreign Checker</h1>
-                    <div class="flex items-center gap-1.5">
-                        <button onclick="toggleModal(true)" class="lg:hidden text-[10px] bg-[#1e293b] text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition-all font-bold">
-                            使い方
-                        </button>
-                        <button id="mode-toggle-btn" onclick="toggleMode()" class="text-[10px] toggle-active border px-2 py-0.5 rounded transition-all font-bold">
-                            簡易版を表示中
-                        </button>
-                        <div class="text-[10px] text-slate-400">Slot: <span id="slot-count" class="text-white font-bold text-xs">0</span>/6</div>
-                    </div>
+    <div class="max-w-md mx-auto">
+        <!-- Header / Stats -->
+        <header class="sticky top-0 z-50 bg-[#05070a] pb-2 border-b border-[#1e293b]">
+            <div class="flex justify-between items-center mb-1">
+                <h1 class="text-[11px] theme-blue uppercase tracking-[0.2em] font-bold">Nightreign Checker</h1>
+                <div class="flex items-center gap-1.5">
+                    <button onclick="toggleModal(true)" class="text-[10px] bg-[#1e293b] text-slate-300 border border-slate-700 px-2 py-0.5 rounded transition-all font-bold">
+                        使い方
+                    </button>
+                    <button id="mode-toggle-btn" onclick="toggleMode()" class="text-[10px] toggle-active border px-2 py-0.5 rounded transition-all font-bold">
+                        簡易版を表示中
+                    </button>
+                    <div class="text-[10px] text-slate-400">Slot: <span id="slot-count" class="text-white font-bold text-[12px]">0</span>/6</div>
                 </div>
-
-                <div id="duplicate-warning" class="w-full bg-transparent border border-slate-800 py-1 text-center text-[10px] text-slate-500 rounded font-bold transition-all mb-4">
+            </div>
+            
+            <div id="warning-container">
+                <div id="duplicate-warning" class="w-full border py-0.5 text-center text-[10px] rounded font-bold transition-colors duration-300">
                     重複なし
                 </div>
-
-                <div class="flex gap-2">
-                    <button onclick="resetAll()" class="flex-grow py-2 text-[10px] bg-[#0f172a] border border-[#1e293b] rounded text-slate-400 hover:text-[#4d98eb] hover:border-[#4d98eb] uppercase font-bold tracking-widest transition-all">Reset All</button>
-                    <button id="next-page-btn" onclick="nextPage()" class="page-btn hidden">1/2</button>
-                </div>
-            </header>
-
-            <main id="effect-groups" class="grid grid-cols-2 gap-x-2 gap-y-3 pb-8 lg:pb-4">
-                <!-- Groups injected by JS -->
-            </main>
-        </div>
-
-        <!-- Sticky Status Panel (PC Only Sidebar) -->
-        <div class="sticky-panel space-y-4">
-            <div id="stats-container" class="bg-dark-night p-4 rounded-lg border border-[#4d98eb]/20 shadow-xl">
-                <h2 class="text-xs theme-blue mb-4 font-bold border-l-2 border-[#4d98eb] pl-2 uppercase">Current Status</h2>
-                <div id="stats-area" class="grid grid-cols-1 gap-2">
-                    <!-- Physical Stat (Big) -->
-                    <div class="attr-card p-3 flex justify-between items-center rounded">
-                        <span class="text-xs text-slate-400 font-bold">物理</span>
-                        <span id="stat-phys" class="text-xl font-bold text-white">0%</span>
-                    </div>
-                    <!-- Other Stats Grid -->
-                    <div class="grid grid-cols-2 gap-2">
-                        <div class="attr-card p-2 text-center rounded">
-                            <div class="text-[10px] text-blue-400 font-bold">魔力</div>
-                            <div id="stat-magic" class="text-base font-bold text-white">0%</div>
-                        </div>
-                        <div class="attr-card p-2 text-center rounded">
-                            <div class="text-[10px] text-red-400 font-bold">炎</div>
-                            <div id="stat-fire" class="text-base font-bold text-white">0%</div>
-                        </div>
-                        <div class="attr-card p-2 text-center rounded">
-                            <div class="text-[10px] text-yellow-400 font-bold">雷</div>
-                            <div id="stat-light" class="text-base font-bold text-white">0%</div>
-                        </div>
-                        <div class="attr-card p-2 text-center rounded">
-                            <div class="text-[10px] text-slate-200 font-bold">聖</div>
-                            <div id="stat-holy" class="text-base font-bold text-white">0%</div>
-                        </div>
-                    </div>
-                </div>
-                <div id="lite-mode-notice" class="mt-4 text-[11px] text-slate-500 italic text-center">
-                    ※詳細版のみ計算が反映されます
-                </div>
             </div>
 
-            <!-- PC Guide (Always visible on large screens) -->
-            <div class="pc-guide hidden bg-dark-night p-4 rounded-lg border border-slate-800 shadow-xl">
-                <h3 class="theme-blue font-bold text-xs mb-3 border-b border-[#4d98eb]/30 pb-2 uppercase">Guide</h3>
-                <div class="text-[11px] space-y-3 text-slate-400 leading-relaxed">
-                    <p class="text-slate-200">付帯効果「カット率上昇」がすべて発動した際の数値を算出します。</p>
-                    <ul class="list-disc ml-4 space-y-1">
-                        <li>Slot上限は6つです。</li>
-                        <li>各行の%部分クリックで追加、右側の「−」で削除。</li>
-                        <li>特定属性カットは属性ボタンで選択。</li>
-                        <li>赤枠は重複制限による無効化を示します。</li>
-                    </ul>
+            <div id="stats-area" class="grid grid-cols-5 gap-1 mb-2 hidden">
+                <div class="attr-card py-1.5 text-center border rounded">
+                    <div class="text-[9px] text-slate-400 font-bold">物理</div>
+                    <div id="stat-phys" class="text-[12px] font-bold text-white">0%</div>
+                </div>
+                <div class="attr-card py-1.5 text-center border rounded">
+                    <div class="text-[9px] text-blue-400 font-bold">魔力</div>
+                    <div id="stat-magic" class="text-[12px] font-bold text-white">0%</div>
+                </div>
+                <div class="attr-card py-1.5 text-center border rounded">
+                    <div class="text-[9px] text-red-400 font-bold">炎</div>
+                    <div id="stat-fire" class="text-[12px] font-bold text-white">0%</div>
+                </div>
+                <div class="attr-card py-1.5 text-center border rounded">
+                    <div class="text-[9px] text-yellow-400 font-bold">雷</div>
+                    <div id="stat-light" class="text-[12px] font-bold text-white">0%</div>
+                </div>
+                <div class="attr-card py-1.5 text-center border rounded">
+                    <div class="text-[9px] text-slate-200 font-bold">聖</div>
+                    <div id="stat-holy" class="text-[12px] font-bold text-white">0%</div>
                 </div>
             </div>
-        </div>
+            
+            <div class="flex gap-2">
+                <button onclick="resetAll()" class="flex-grow py-2 text-[10px] bg-[#0f172a] border border-[#1e293b] rounded text-slate-400 hover:text-[#4d98eb] hover:border-[#4d98eb] uppercase font-bold tracking-widest transition-all">Reset All</button>
+                <button id="next-page-btn" onclick="nextPage()" class="page-btn hidden">1/2</button>
+            </div>
+        </header>
+
+        <!-- メインエリア -->
+        <main id="effect-groups" class="mt-3 grid grid-cols-2 gap-x-2 gap-y-3 pb-8">
+            <!-- Groups injected by JS -->
+        </main>
     </div>
 
-    <!-- Mobile Modal -->
+    <!-- How-to Modal -->
     <div id="how-to-modal" class="fixed inset-0 z-[100] hidden flex items-center justify-center p-4">
         <div class="modal-content w-full max-w-sm rounded-lg p-5 shadow-2xl">
             <h3 class="theme-blue font-bold text-[14px] mb-3 border-b border-[#4d98eb]/30 pb-2 uppercase tracking-wider">Guide</h3>
+            
             <div class="space-y-4 text-[12px] leading-relaxed text-slate-300">
-                <p class="text-white font-bold">ELDEN RING NIGHTREIGN 付帯効果チェック</p>
+                <p class="text-white font-bold">
+                    ELDEN RING NIGHTREIGN<br>
+                    付帯効果「カット率上昇」が発動するかをチェックします。
+                </p>
+
                 <section>
-                    <h4 class="text-[#4d98eb] font-bold mb-1">【簡易版/詳細版】</h4>
+                    <h4 class="text-[#4d98eb] font-bold mb-1">【簡易版】</h4>
                     <ul class="list-disc ml-4 space-y-1">
-                        <li>%部分を押すとSlotに追加、右に表示される「-」ボタンで削除。</li>
+                        <li>入手した効果の%部分を押すと、Slotに追加されます。</li>
+                        <li>右に表示される「-」ボタンを押すと、Slotから削除できます。</li>
                         <li>重複不可の組み合わせを検知した場合、警告が表示されます。</li>
-                        <li>詳細版ではページ切替により全パラメータを網羅します。</li>
+                        <li>選択できない効果は重複可能です。（記録不要）</li>
+                        <li>「RESET ALL」で選択を全て解除することができます。</li>
+                    </ul>
+                </section>
+
+                <section>
+                    <h4 class="text-[#4d98eb] font-bold mb-1">【詳細版】</h4>
+                    <ul class="list-disc ml-4 space-y-1">
+                        <li>簡易版の機能に加え、効果が全て発動した場合のカット率を計算することができます。</li>
+                        <li>「1/2」ボタンを押すことで、ページを切り替えることができます。</li>
                     </ul>
                 </section>
             </div>
-            <button onclick="toggleModal(false)" class="mt-6 w-full py-2 bg-[#4d98eb] text-white font-bold rounded uppercase text-[12px] tracking-widest">閉じる</button>
+
+            <button onclick="toggleModal(false)" class="mt-6 w-full py-2 bg-[#4d98eb] text-white font-bold rounded hover:bg-blue-600 transition-colors uppercase text-[12px] tracking-widest">
+                閉じる
+            </button>
         </div>
     </div>
 
     <script>
         const GROUPS = [
+            // Page 0 (詳細版のみ)
             { id: 'group1', name: 'HP最大時', rates: [24, 32, 40], type: 'stack', target: 'all', lite: false, page: 0 },
             { id: 'group2', name: 'HP低下時', rates: [23, 30, 37], type: 'stack', target: 'all', lite: false, page: 0 },
             { id: 'group3', name: '属性カット', rates: [9, 13], type: 'stack', target: 'elemental', lite: false, page: 0 },
             { id: 'group4', name: '物理カット', rates: [9, 13], type: 'stack', target: 'phys', lite: false, page: 0 },
             { id: 'attr_combined', name: '特定属性カット', rates: [12, 16, 20], type: 'stack', isMulti: true, lite: false, page: 0 },
+            
+            // Page 1 (簡易版と詳細版の両方)
             { id: 'limit1', name: 'ガード成功時', rates: [14, 19, 24], type: 'limit', target: 'all', lite: true, page: 1 },
             { id: 'limit2', name: '詠唱時', rates: [18, 24, 30], type: 'limit', target: 'all', lite: true, page: 1 },
             { id: 'limit3', name: 'タメ攻撃命中時', rates: [24, 32, 40], type: 'limit', target: 'all', lite: true, page: 1 },
@@ -270,22 +265,17 @@
             { id: 'limit5', name: '攻撃連続時', rates: [38, 48, 60], type: 'limit', target: 'all', lite: true, page: 1 },
         ];
 
+        // 状態をモードごとに完全に分離
         let selectionsLite = []; 
         let selectionsFull = []; 
+        
         let isLiteMode = true; 
         let currentPage = 1; 
-        let isPC = window.innerWidth >= 1024;
 
-        window.onresize = () => {
-            const nowPC = window.innerWidth >= 1024;
-            if (nowPC !== isPC) {
-                isPC = nowPC;
-                renderGroups();
-                updateUI();
-            }
-        };
-
-        function getActiveSelections() { return isLiteMode ? selectionsLite : selectionsFull; }
+        // 現在のモードに応じたセレクション配列を返す
+        function getActiveSelections() {
+            return isLiteMode ? selectionsLite : selectionsFull;
+        }
 
         function init() {
             renderGroups();
@@ -294,23 +284,33 @@
 
         function toggleModal(show) {
             const modal = document.getElementById('how-to-modal');
-            modal.classList.toggle('hidden', !show);
-            document.body.style.overflow = show ? 'hidden' : 'auto';
+            if (show) {
+                modal.classList.remove('hidden');
+                document.body.style.overflow = 'hidden';
+            } else {
+                modal.classList.add('hidden');
+                document.body.style.overflow = 'auto';
+            }
         }
 
         function toggleMode() {
             isLiteMode = !isLiteMode;
             const btn = document.getElementById('mode-toggle-btn');
+            const statsArea = document.getElementById('stats-area');
             const nextBtn = document.getElementById('next-page-btn');
-            const notice = document.getElementById('lite-mode-notice');
             
-            btn.innerText = isLiteMode ? "簡易版を表示中" : "詳細版を表示中";
-            nextBtn.classList.toggle('hidden', isLiteMode || isPC);
-            notice.classList.toggle('hidden', !isLiteMode);
+            if (isLiteMode) {
+                btn.innerText = "簡易版を表示中";
+                statsArea.classList.add('hidden');
+                nextBtn.classList.add('hidden');
+                currentPage = 1;
+            } else {
+                btn.innerText = "詳細版を表示中";
+                statsArea.classList.remove('hidden');
+                nextBtn.classList.remove('hidden');
+                currentPage = 0;
+            }
             
-            if (isLiteMode) currentPage = 1;
-            else if (!isPC) currentPage = 0;
-
             renderGroups();
             updateUI();
         }
@@ -327,15 +327,14 @@
             container.innerHTML = ''; 
 
             GROUPS.forEach(group => {
-                // PC表示かつ詳細版なら全ページ表示。スマホならcurrentPageのみ表示
                 if (isLiteMode && !group.lite) return;
-                if (!isLiteMode && !isPC && group.page !== currentPage) return;
+                if (!isLiteMode && group.page !== currentPage) return;
 
                 const section = document.createElement('section');
                 section.className = `bg-dark-night p-2 rounded-lg border border-[#4d98eb]/10 shadow-xl ${(!isLiteMode && group.isMulti) ? 'full-width-section' : ''}`;
                 
                 const title = document.createElement('h2');
-                title.className = 'text-[10px] theme-blue mb-2 font-bold opacity-90 border-l-2 border-[#4d98eb] pl-2 uppercase';
+                title.className = 'text-[10px] theme-blue mb-2 font-bold opacity-90 border-l-2 border-[#4d98eb] pl-2';
                 title.innerText = group.name;
                 section.appendChild(title);
 
@@ -355,12 +354,14 @@
 
                         const controls = document.createElement('div');
                         controls.className = 'flex items-center flex-grow pr-1'; 
+
                         const attrs = [
                             { id: 'magic', label: '魔', color: 'color-magic' },
                             { id: 'fire', label: '炎', color: 'color-fire' },
                             { id: 'light', label: '雷', color: 'color-light' },
                             { id: 'holy', label: '聖', color: 'color-holy' }
                         ];
+
                         attrs.forEach(attr => {
                             const btn = document.createElement('button');
                             btn.className = `control-btn attr-btn ${attr.color}`;
@@ -369,38 +370,51 @@
                             btn.onclick = () => updateCountMulti(group, rate, attr.id);
                             controls.appendChild(btn);
                         });
+
                         const minusBtn = document.createElement('button');
                         minusBtn.className = 'control-btn attr-btn flex-none ml-1.5 bg-slate-900'; 
                         minusBtn.id = `minus-${group.id}-${rate}`;
                         minusBtn.innerText = '−';
                         minusBtn.onclick = () => removeLastFromRow(group.id, rate);
                         controls.appendChild(minusBtn);
+
                         row.appendChild(controls);
+
                     } else {
                         const labelArea = document.createElement('div');
                         labelArea.className = 'flex-grow pl-2 flex items-center h-full cursor-pointer';
                         labelArea.onclick = () => updateCount(group, rate, 1);
+                        
                         const label = document.createElement('span');
                         label.className = 'text-[13px] font-bold text-white';
                         label.innerText = `${rate}%`;
+
                         const countDisplay = document.createElement('span');
                         countDisplay.className = 'text-[13px] font-black ml-2 w-6 text-left';
                         countDisplay.id = `count-${group.id}-${rate}`;
+
                         labelArea.appendChild(label);
                         labelArea.appendChild(countDisplay);
+                        
                         const controls = document.createElement('div');
                         controls.className = 'flex items-center pr-1';
+                        
                         const minusBtn = document.createElement('button');
                         minusBtn.className = 'control-btn';
                         minusBtn.id = `minus-${group.id}-${rate}`;
                         minusBtn.innerText = '−';
-                        minusBtn.onclick = (e) => { e.stopPropagation(); updateCount(group, rate, -1); };
+                        minusBtn.onclick = (e) => {
+                            e.stopPropagation();
+                            updateCount(group, rate, -1);
+                        };
+                        
                         controls.appendChild(minusBtn);
                         row.appendChild(labelArea);
                         row.appendChild(controls);
                     }
                     list.appendChild(row);
                 });
+
                 section.appendChild(list);
                 container.appendChild(section);
             });
@@ -408,19 +422,30 @@
 
         function updateCount(group, rate, delta) {
             const activeSelections = getActiveSelections();
+            const currentTotal = activeSelections.length;
+            const countForThis = activeSelections.filter(s => s.groupId === group.id && s.rate === rate).length;
+
             if (delta > 0) {
-                if (activeSelections.length >= 6) { shakeRow(group.id, rate); return; }
+                if (currentTotal >= 6) {
+                    shakeRow(group.id, rate);
+                    return;
+                }
                 activeSelections.push({ groupId: group.id, rate: rate, type: group.type, target: group.target });
             } else {
-                const idx = activeSelections.findLastIndex(s => s.groupId === group.id && s.rate === rate);
-                if (idx !== -1) activeSelections.splice(idx, 1);
+                if (countForThis > 0) {
+                    const idx = activeSelections.findLastIndex(s => s.groupId === group.id && s.rate === rate);
+                    activeSelections.splice(idx, 1);
+                }
             }
             updateUI();
         }
 
         function updateCountMulti(group, rate, targetId) {
             const activeSelections = getActiveSelections();
-            if (activeSelections.length >= 6) { shakeRow(group.id, rate); return; }
+            if (activeSelections.length >= 6) {
+                shakeRow(group.id, rate);
+                return;
+            }
             activeSelections.push({ groupId: group.id, rate: rate, type: group.type, target: targetId });
             updateUI();
         }
@@ -428,7 +453,10 @@
         function removeLastFromRow(groupId, rate) {
             const activeSelections = getActiveSelections();
             const idx = activeSelections.findLastIndex(s => s.groupId === groupId && s.rate === rate);
-            if (idx !== -1) { activeSelections.splice(idx, 1); updateUI(); }
+            if (idx !== -1) {
+                activeSelections.splice(idx, 1);
+                updateUI();
+            }
         }
 
         function shakeRow(groupId, rate) {
@@ -443,22 +471,25 @@
             const activeSelections = getActiveSelections();
             document.getElementById('slot-count').innerText = activeSelections.length;
 
-            if (!isLiteMode && !isPC) {
-                document.getElementById('next-page-btn').innerText = `${currentPage + 1}/2`;
+            if (!isLiteMode) {
+                const nextBtn = document.getElementById('next-page-btn');
+                nextBtn.innerText = `${currentPage + 1}/2`;
             }
 
             const limitSelections = activeSelections.filter(s => s.type === 'limit');
             const rateCounts = {};
-            limitSelections.forEach(s => rateCounts[s.rate] = (rateCounts[s.rate] || 0) + 1);
+            limitSelections.forEach(s => {
+                rateCounts[s.rate] = (rateCounts[s.rate] || 0) + 1;
+            });
             const duplicateRates = Object.keys(rateCounts).filter(r => rateCounts[r] > 1).map(Number);
 
             const warningEl = document.getElementById('duplicate-warning');
             if (duplicateRates.length > 0) {
                 warningEl.innerText = "⚠️ 重複不可：1つ分のみ適用中";
-                warningEl.classList.add('bg-red-950', 'border-red-500', 'text-red-200');
+                warningEl.className = "w-full bg-red-950 border-red-500 py-0.5 text-center text-[10px] text-red-200 rounded font-bold border transition-colors duration-300";
             } else {
                 warningEl.innerText = "重複なし";
-                warningEl.classList.remove('bg-red-950', 'border-red-500', 'text-red-200');
+                warningEl.className = "w-full bg-transparent border-slate-800 py-0.5 text-center text-[10px] text-slate-500 rounded font-bold border transition-colors duration-300";
             }
 
             GROUPS.forEach(group => {
@@ -473,12 +504,15 @@
                     row.classList.toggle('normal-border', count === 0);
 
                     if (group.isMulti) {
-                        const labels = { magic: '魔', fire: '炎', light: '雷', holy: '聖' };
+                        const attrBaseLabels = { magic: '魔', fire: '炎', light: '雷', holy: '聖' };
                         ['magic', 'fire', 'light', 'holy'].forEach(attr => {
                             const btn = document.getElementById(`btn-${group.id}-${rate}-${attr}`);
-                            const attrCount = rowSelections.filter(s => s.target === attr).length;
-                            btn.innerText = attrCount > 0 ? `${labels[attr]}x${attrCount}` : labels[attr];
-                            btn.classList.toggle(`active-${attr}`, attrCount > 0);
+                            const attrSelections = rowSelections.filter(s => s.target === attr);
+                            const attrCount = attrSelections.length;
+                            const activeClass = `active-${attr}`;
+                            
+                            btn.innerText = attrCount > 0 ? `${attrBaseLabels[attr]}x${attrCount}` : attrBaseLabels[attr];
+                            btn.classList.toggle(activeClass, attrCount > 0);
                         });
                         document.getElementById(`minus-${group.id}-${rate}`).disabled = count === 0;
                     } else {
@@ -487,51 +521,66 @@
                         display.className = count > 0 ? 'text-[13px] font-black ml-1 w-6 theme-blue' : 'text-[13px] ml-1 w-6 text-slate-800';
                         document.getElementById(`minus-${group.id}-${rate}`).disabled = count === 0;
                     }
-                    row.classList.toggle('duplicate-error', group.type === 'limit' && duplicateRates.includes(rate) && count > 0);
+
+                    if (group.type === 'limit' && duplicateRates.includes(rate) && count > 0) {
+                        row.classList.add('duplicate-error');
+                    } else {
+                        row.classList.remove('duplicate-error');
+                    }
                 });
             });
+
             calculateStats();
         }
 
         function calculateStats() {
-            const stats = { phys: 1.0, magic: 1.0, fire: 1.0, light: 1.0, holy: 1.0 };
-            const activeSelections = getActiveSelections();
-
+            // 詳細版のみ計算。簡易版の場合は0%固定（または計算しない）
             if (isLiteMode) {
-                Object.keys(stats).forEach(k => {
-                    document.getElementById(`stat-${k}`).innerText = '0%';
-                    document.getElementById(`stat-${k}`).classList.add('opacity-30');
-                });
                 return;
             }
 
+            const activeSelections = getActiveSelections();
+            const stats = { phys: 1.0, magic: 1.0, fire: 1.0, light: 1.0, holy: 1.0 };
             const effectiveSelections = [];
             const processedLimitRates = new Set();
+
             activeSelections.forEach(s => {
                 if (s.type === 'limit') {
                     if (!processedLimitRates.has(s.rate)) {
                         effectiveSelections.push(s); 
                         processedLimitRates.add(s.rate);
                     }
-                } else effectiveSelections.push(s); 
+                } else {
+                    effectiveSelections.push(s); 
+                }
             });
 
             effectiveSelections.forEach(s => {
-                const m = 1 - (s.rate / 100);
-                if (s.target === 'all') Object.keys(stats).forEach(k => stats[k] *= m);
-                else if (s.target === 'elemental') ['magic','fire','light','holy'].forEach(k => stats[k] *= m);
-                else stats[s.target] *= m;
+                const multiplier = 1 - (s.rate / 100);
+                if (s.target === 'all') {
+                    Object.keys(stats).forEach(k => stats[k] *= multiplier);
+                } else if (s.target === 'elemental') {
+                    stats.magic *= multiplier; stats.fire *= multiplier;
+                    stats.light *= multiplier; stats.holy *= multiplier;
+                } else {
+                    stats[s.target] *= multiplier;
+                }
             });
 
-            Object.keys(stats).forEach(k => {
-                const el = document.getElementById(`stat-${k}`);
-                el.innerText = `${((1 - stats[k]) * 100).toFixed(1)}%`;
-                el.classList.remove('opacity-30');
-            });
+            const format = (val) => `${((1 - val) * 100).toFixed(1)}%`;
+            document.getElementById('stat-phys').innerText = format(stats.phys);
+            document.getElementById('stat-magic').innerText = format(stats.magic);
+            document.getElementById('stat-fire').innerText = format(stats.fire);
+            document.getElementById('stat-light').innerText = format(stats.light);
+            document.getElementById('stat-holy').innerText = format(stats.holy);
         }
 
         function resetAll() {
-            if (isLiteMode) selectionsLite = []; else selectionsFull = [];
+            if (isLiteMode) {
+                selectionsLite = [];
+            } else {
+                selectionsFull = [];
+            }
             updateUI();
         }
 
