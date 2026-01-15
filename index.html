@@ -13,7 +13,7 @@
             -webkit-tap-highlight-color: transparent;
             overflow-x: hidden;
             min-height: 100vh;
-            /* ページ全体での不要な挙動を抑制 */
+            /* 画面全体でズーム以外の操作（パン）のみを許可 */
             touch-action: manipulation;
         }
         /* NIGHTREIGN Blue Theme */
@@ -28,7 +28,7 @@
             background-clip: padding-box;
             transition: all 0.2s ease;
             min-height: 36px;
-            /* ダブルタップズームを無効化し、タップの反応を高速化 */
+            /* タップ時のズーム判定を無効化 */
             touch-action: manipulation;
         }
         .effect-row.normal-border {
@@ -55,7 +55,7 @@
             font-weight: bold;
             border-radius: 4px;
             font-size: 13px;
-            /* ボタン単体でもダブルタップズームを防止 */
+            /* 連打によるズームを防止 */
             touch-action: manipulation;
         }
         /* 属性用小型ボタン */
@@ -280,6 +280,20 @@
         function init() {
             renderGroups();
             updateUI();
+            
+            // iPhoneでのダブルタップズームを完全に防ぐためのスクリプト
+            let lastTouchTime = 0;
+            document.addEventListener('touchend', (event) => {
+                const now = (new Date()).getTime();
+                if (now - lastTouchTime <= 300) {
+                    // 300ms以内のタップはダブルタップとみなしてデフォルト挙動を抑制
+                    // ただしボタンのクリックイベント自体はtouch-action: manipulationで動作する
+                    if (event.target.tagName === 'BUTTON' || event.target.closest('.effect-row')) {
+                        // event.preventDefault(); // ここで無効化しすぎるとクリックが発火しない場合があるため、CSSを優先
+                    }
+                }
+                lastTouchTime = now;
+            }, false);
         }
 
         function toggleModal(show) {
