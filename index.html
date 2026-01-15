@@ -22,12 +22,13 @@
             border: 2px solid transparent; 
             background-clip: padding-box;
             transition: all 0.2s ease;
-            min-height: 38px;
+            min-height: 36px;
             touch-action: manipulation;
-            display: flex;
-            align-items: stretch;
         }
-        .attr-row-special { min-height: 52px; }
+        /* 特定属性カット用の行：ボタン拡大に合わせて高さを再調整 */
+        .attr-row-special {
+            min-height: 52px;
+        }
         
         .effect-row.normal-border { border-color: #1e293b; }
         .effect-row.active {
@@ -56,6 +57,7 @@
             transition: background-color 0.1s;
         }
 
+        /* 他の効果のマイナスボタンも赤く点灯するように統一 */
         .control-btn:active {
             background-color: #ef4444 !important;
             color: white !important;
@@ -155,15 +157,6 @@
         #how-to-modal { background-color: rgba(0, 0, 0, 0.85); backdrop-filter: blur(4px); }
         .modal-content { background-color: #0a111a; border: 1px solid #4d98eb; max-height: 85vh; overflow-y: auto; }
         .no-select { user-select: none; -webkit-user-select: none; }
-        
-        .clickable-label-area {
-            flex-grow: 1;
-            display: flex;
-            align-items: center;
-            min-width: 40px;
-            cursor: pointer;
-            padding-left: 8px;
-        }
     </style>
 </head>
 <body class="p-2 sm:p-4 no-select">
@@ -219,6 +212,7 @@
             </div>
         </header>
 
+        <!-- メイン -->
         <main id="effect-groups" class="mt-1.5 grid grid-cols-2 gap-x-2 gap-y-1.5 pb-10">
             <!-- Groups injected by JS -->
         </main>
@@ -231,24 +225,26 @@
             <div class="space-y-4 text-[12px] leading-relaxed text-slate-300">
                 <p class="text-white font-bold">ELDEN RING NIGHTREIGN<br>付帯効果「カット率上昇」が発動するかをチェックします。</p>
                 
-                <section>
-                    <h4 class="text-[#4d98eb] font-bold mb-1">【簡易版】</h4>
-                    <ul class="list-disc ml-4 space-y-1">
-                        <li>入手した効果の%部分を押すと、Slotに追加されます。</li>
-                        <li>右に表示される「-」ボタンを押すと、Slotから削除できます。</li>
-                        <li>重複不可の組み合わせを検知した場合、警告が表示されます。</li>
-                        <li>選択できない効果は重複可能です。（記録不要）</li>
-                        <li>「RESET ALL」で選択を全て解除することができます。</li>
-                    </ul>
-                </section>
-
-                <section>
-                    <h4 class="text-[#4d98eb] font-bold mb-1">【詳細版】</h4>
-                    <ul class="list-disc ml-4 space-y-1">
-                        <li>簡易版の機能に加え、効果が全て発動した場合のカット率を計算することができます。</li>
-                        <li>「1/2」ボタンを押すことで、ページを切り替えることができます。</li>
-                    </ul>
-                </section>
+                <div class="space-y-4">
+                    <section>
+                        <h4 class="text-[#4d98eb] font-bold mb-1">【簡易版】</h4>
+                        <ul class="list-disc ml-4 space-y-1">
+                            <li>入手した効果の%部分を押すと、Slotに追加されます。</li>
+                            <li>右に表示される「-」ボタンを押すと、Slotから削除できます。</li>
+                            <li>重複不可の組み合わせを検知した場合、警告が表示されます。</li>
+                            <li>選択できない効果は重複可能です。（記録不要）</li>
+                            <li>「RESET ALL」で選択を全て解除することができます。</li>
+                        </ul>
+                    </section>
+                    
+                    <section>
+                        <h4 class="text-[#4d98eb] font-bold mb-1">【詳細版】</h4>
+                        <ul class="list-disc ml-4 space-y-1">
+                            <li>簡易版の機能に加え、効果が全て発動した場合のカット率を計算することができます。</li>
+                            <li>「1/2」ボタンを押すことで、ページを切り替えることができます。</li>
+                        </ul>
+                    </section>
+                </div>
             </div>
             <button onclick="toggleModal(false)" class="mt-6 w-full py-2 bg-[#4d98eb] text-white font-bold rounded hover:bg-blue-600 transition-colors uppercase text-[12px] tracking-widest">閉じる</button>
         </div>
@@ -262,11 +258,11 @@
             { id: 'group4', name: '物理カット', rates: [9, 13], type: 'stack', target: 'phys', lite: false, page: 0 },
             { id: 'attr_combined', name: '特定属性カット', rates: [12, 16, 20], type: 'stack', isMulti: true, lite: false, page: 0 },
             
-            { id: 'limit1', name: 'ガード成功時', rates: [14, 19, 24], type: 'limit', target: 'all', lite: true, page: 1, labels: {24: "24%", 19: "それ以外", 14: "それ以外"} },
-            { id: 'limit2', name: '魔術／祈祷の詠唱時', rates: [18, 24, 30], type: 'limit', target: 'all', lite: true, page: 1, labels: {24: "24%", 30: "それ以外", 18: "それ以外"} },
-            { id: 'limit3', name: 'タメ攻撃命中時', rates: [24, 32, 40], type: 'limit', target: 'all', lite: true, page: 1, labels: {24: "24%", 40: "それ以外", 32: "それ以外"} },
-            { id: 'limit4', name: '被ダメージ時', rates: [21, 28, 36], type: 'limit', target: 'all', lite: true, page: 1, forceSingle: true, labels: {21: "21%/28%/36%"} },
-            { id: 'limit5', name: '攻撃連続時（一度だけ）', rates: [38, 48, 60], type: 'limit', target: 'all', lite: true, page: 1, forceSingle: true, labels: {38: "38%/48%/60%"} },
+            { id: 'limit1', name: 'ガード成功時', rates: [14, 19, 24], type: 'limit', target: 'all', lite: true, page: 1 },
+            { id: 'limit2', name: '魔術／祈祷の詠唱時', rates: [18, 24, 30], type: 'limit', target: 'all', lite: true, page: 1 },
+            { id: 'limit3', name: 'タメ攻撃命中時', rates: [24, 32, 40], type: 'limit', target: 'all', lite: true, page: 1 },
+            { id: 'limit4', name: '被ダメージ時', rates: [21, 28, 36], type: 'limit', target: 'all', lite: true, page: 1 },
+            { id: 'limit5', name: '攻撃連続時（一度だけ）', rates: [38, 48, 60], type: 'limit', target: 'all', lite: true, page: 1 },
         ];
 
         let selectionsLite = []; 
@@ -324,25 +320,13 @@
                 const list = document.createElement('div');
                 list.className = 'space-y-1.5';
                 
-                let displayRates = [...group.rates];
-                if (isLiteMode) {
-                    if (group.forceSingle) {
-                        displayRates = [group.rates[0]];
-                    } else if (group.labels) {
-                        const rates24 = group.rates.filter(r => r === 24);
-                        const ratesOthers = group.rates.filter(r => r !== 24);
-                        displayRates = [];
-                        if (rates24.length > 0) displayRates.push(24);
-                        if (ratesOthers.length > 0) displayRates.push(ratesOthers[0]);
-                    }
-                }
-
-                displayRates.forEach(rate => {
+                group.rates.forEach(rate => {
                     const row = document.createElement('div');
-                    row.className = `effect-row normal-border rounded bg-[#020617] ${(!isLiteMode && group.isMulti) ? 'attr-row-special' : ''}`;
+                    const isSpecial = group.isMulti;
+                    row.className = `effect-row normal-border flex items-center justify-between p-0.5 rounded bg-[#020617] ${isSpecial ? 'attr-row-special' : ''}`;
                     row.id = `row-${group.id}-${rate}`;
                     
-                    if (!isLiteMode && group.isMulti) {
+                    if (isSpecial) {
                         const labelArea = document.createElement('div');
                         labelArea.className = 'pl-2 flex items-center'; 
                         labelArea.innerHTML = `<span class="text-[12px] font-bold text-white">${rate}%</span>`;
@@ -350,70 +334,62 @@
 
                         const attrGrid = document.createElement('div');
                         attrGrid.className = 'attr-grid';
-                        ['magic', 'fire', 'light', 'holy'].forEach(attrId => {
+
+                        const attrs = [
+                            { id: 'magic', label: '魔', color: 'color-magic' },
+                            { id: 'fire', label: '炎', color: 'color-fire' },
+                            { id: 'light', label: '雷', color: 'color-light' },
+                            { id: 'holy', label: '聖', color: 'color-holy' }
+                        ];
+
+                        attrs.forEach(attr => {
                             const controlGroup = document.createElement('div');
                             controlGroup.className = 'attr-control-group';
+
                             const plusBtn = document.createElement('button');
-                            plusBtn.className = `attr-btn-sm color-${attrId}`;
-                            plusBtn.id = `btn-${group.id}-${rate}-${attrId}`;
-                            plusBtn.innerText = attrId === 'magic' ? '魔' : attrId === 'fire' ? '炎' : attrId === 'light' ? '雷' : '聖';
-                            plusBtn.onclick = () => updateCountMulti(group, rate, attrId, 1);
+                            plusBtn.className = `attr-btn-sm ${attr.color}`;
+                            plusBtn.id = `btn-${group.id}-${rate}-${attr.id}`;
+                            plusBtn.innerText = attr.label;
+                            plusBtn.onclick = () => updateCountMulti(group, rate, attr.id, 1);
+                            
                             const minusBtn = document.createElement('button');
                             minusBtn.className = 'attr-minus-btn';
+                            minusBtn.id = `minus-${group.id}-${rate}-${attr.id}`;
                             minusBtn.innerText = '−';
-                            minusBtn.onclick = () => updateCountMulti(group, rate, attrId, -1);
+                            minusBtn.onclick = () => updateCountMulti(group, rate, attr.id, -1);
+
                             controlGroup.appendChild(plusBtn);
                             controlGroup.appendChild(minusBtn);
                             attrGrid.appendChild(controlGroup);
                         });
+
                         row.appendChild(attrGrid);
+
                     } else {
                         const labelArea = document.createElement('div');
-                        labelArea.className = 'clickable-label-area';
-                        labelArea.onclick = () => {
-                            if (isLiteMode && group.labels && group.labels[rate] === "それ以外") {
-                                const otherRate = group.rates.find(r => r !== 24);
-                                updateCount(group, otherRate, 1);
-                            } else {
-                                updateCount(group, rate, 1);
-                            }
-                        };
+                        labelArea.className = 'flex-grow pl-2 flex items-center h-full cursor-pointer';
+                        labelArea.onclick = () => updateCount(group, rate, 1);
                         
                         const label = document.createElement('span');
-                        label.className = 'text-[12px] font-bold text-white';
-                        if (isLiteMode) {
-                            if (group.labels && group.labels[rate]) label.innerText = group.labels[rate];
-                            else label.innerText = `${rate}%`;
-                        } else {
-                            label.innerText = `${rate}%`;
-                        }
+                        label.className = 'text-[13px] font-bold text-white';
+                        label.innerText = `${rate}%`;
 
                         const countDisplay = document.createElement('span');
-                        countDisplay.className = 'text-[11px] font-black ml-1 w-6 text-left';
+                        countDisplay.className = 'text-[12px] font-black ml-1.5 w-6 text-left';
                         countDisplay.id = `count-${group.id}-${rate}`;
 
                         labelArea.appendChild(label);
                         labelArea.appendChild(countDisplay);
                         
                         const controls = document.createElement('div');
-                        controls.className = 'flex items-center pr-2 py-1';
+                        controls.className = 'flex items-center pr-1';
                         const minusBtn = document.createElement('button');
                         minusBtn.className = 'control-btn';
+                        minusBtn.id = `minus-${group.id}-${rate}`;
                         minusBtn.innerText = '−';
                         minusBtn.onclick = (e) => {
                             e.stopPropagation();
-                            if (isLiteMode && group.labels && group.labels[rate] === "それ以外") {
-                                const activeS = getActiveSelections();
-                                const idx = activeS.findLastIndex(s => s.groupId === group.id && s.rate !== 24);
-                                if (idx !== -1) activeS.splice(idx, 1);
-                            } else if (isLiteMode && group.forceSingle) {
-                                const activeS = getActiveSelections();
-                                const idx = activeS.findLastIndex(s => s.groupId === group.id);
-                                if (idx !== -1) activeS.splice(idx, 1);
-                            } else {
-                                updateCount(group, rate, -1);
-                            }
-                            updateUI();
+                            updateCount(group, rate, -1);
                         };
                         controls.appendChild(minusBtn);
                         row.appendChild(labelArea);
@@ -427,25 +403,25 @@
         }
 
         function updateCount(group, rate, delta) {
-            const activeS = getActiveSelections();
+            const activeSelections = getActiveSelections();
             if (delta > 0) {
-                if (activeS.length >= 6) { shakeRow(group.id, rate); return; }
-                activeS.push({ groupId: group.id, rate: rate, type: group.type, target: group.target });
+                if (activeSelections.length >= 6) { shakeRow(group.id, rate); return; }
+                activeSelections.push({ groupId: group.id, rate: rate, type: group.type, target: group.target });
             } else {
-                const idx = activeS.findLastIndex(s => s.groupId === group.id && s.rate === rate);
-                if (idx !== -1) activeS.splice(idx, 1);
+                const idx = activeSelections.findLastIndex(s => s.groupId === group.id && s.rate === rate);
+                if (idx !== -1) activeSelections.splice(idx, 1);
             }
             updateUI();
         }
 
         function updateCountMulti(group, rate, targetId, delta) {
-            const activeS = getActiveSelections();
+            const activeSelections = getActiveSelections();
             if (delta > 0) {
-                if (activeS.length >= 6) { shakeRow(group.id, rate); return; }
-                activeS.push({ groupId: group.id, rate: rate, type: group.type, target: targetId });
+                if (activeSelections.length >= 6) { shakeRow(group.id, rate); return; }
+                activeSelections.push({ groupId: group.id, rate: rate, type: group.type, target: targetId });
             } else {
-                const idx = activeS.findLastIndex(s => s.groupId === group.id && s.rate === rate && s.target === targetId);
-                if (idx !== -1) activeS.splice(idx, 1);
+                const idx = activeSelections.findLastIndex(s => s.groupId === group.id && s.rate === rate && s.target === targetId);
+                if (idx !== -1) activeSelections.splice(idx, 1);
             }
             updateUI();
         }
@@ -459,20 +435,17 @@
         }
 
         function updateUI() {
-            const activeS = getActiveSelections();
-            document.getElementById('slot-count').innerText = activeS.length;
+            const activeSelections = getActiveSelections();
+            document.getElementById('slot-count').innerText = activeSelections.length;
             if (!isLiteMode) document.getElementById('next-page-btn').innerText = `${currentPage + 1}/2`;
 
+            const limitSelections = activeSelections.filter(s => s.type === 'limit');
             const rateCounts = {};
-            activeS.forEach(s => {
-                if (s.type === 'limit') rateCounts[s.rate] = (rateCounts[s.rate] || 0) + 1;
-            });
+            limitSelections.forEach(s => rateCounts[s.rate] = (rateCounts[s.rate] || 0) + 1);
             const duplicateRates = Object.keys(rateCounts).filter(r => rateCounts[r] > 1).map(Number);
-            const count24Total = activeS.filter(s => s.rate === 24 && ['limit1', 'limit2', 'limit3'].includes(s.groupId)).length;
-            const is24Error = count24Total > 1;
 
             const warningEl = document.getElementById('duplicate-warning');
-            if (duplicateRates.length > 0 || is24Error) {
+            if (duplicateRates.length > 0) {
                 warningEl.innerText = "⚠️ 重複不可：1つ分のみ適用中";
                 warningEl.className = "w-full bg-red-950 border-red-500 py-0.5 text-center text-[10px] text-red-200 rounded font-bold border";
             } else {
@@ -482,53 +455,29 @@
 
             GROUPS.forEach(group => {
                 group.rates.forEach(rate => {
-                    const rowId = `row-${group.id}-${rate}`;
-                    const row = document.getElementById(rowId);
-                    if (!row) return;
+                    const row = document.getElementById(`row-${group.id}-${rate}`);
+                    if (!row) return; 
 
-                    const rowS = activeS.filter(s => s.groupId === group.id && s.rate === rate);
-                    const totalGroupS = activeS.filter(s => s.groupId === group.id);
-                    
-                    let isActive = false;
-                    let displayCount = 0;
-                    let isError = false;
-                    
-                    if (isLiteMode && group.labels && group.labels[rate] === "それ以外") {
-                        const others = totalGroupS.filter(s => s.rate !== 24);
-                        isActive = others.length > 0;
-                        displayCount = others.length;
-                        if (displayCount > 1) isError = true;
-                    } else if (isLiteMode && group.forceSingle) {
-                        isActive = totalGroupS.length > 0;
-                        displayCount = totalGroupS.length;
-                        if (displayCount > 1) isError = true;
-                    } else {
-                        isActive = rowS.length > 0;
-                        displayCount = rowS.length;
-                        if (displayCount > 1 && group.type === 'limit') isError = true;
-                        if (rate === 24 && is24Error && isActive && ['limit1', 'limit2', 'limit3'].includes(group.id)) isError = true;
-                        if (duplicateRates.includes(rate) && isActive && group.type === 'limit' && !isError) isError = true;
-                    }
+                    const rowSelections = activeSelections.filter(s => s.groupId === group.id && s.rate === rate);
+                    const count = rowSelections.length;
+                    row.classList.toggle('active', count > 0);
+                    row.classList.toggle('normal-border', count === 0);
 
-                    row.classList.toggle('active', isActive);
-                    row.classList.toggle('normal-border', !isActive);
-                    row.classList.toggle('duplicate-error', isError);
-
-                    if (!group.isMulti) {
-                        const display = document.getElementById('count-' + group.id + '-' + rate);
-                        if (display) {
-                            display.innerText = displayCount === 0 ? '' : '×' + displayCount;
-                            display.className = displayCount > 0 ? 'text-[11px] font-black ml-1 w-6 theme-blue' : 'text-[11px] ml-1 w-6 text-slate-800';
-                        }
-                    } else if (group.isMulti && !isLiteMode) {
+                    if (group.isMulti) {
+                        const attrLabels = { magic: '魔', fire: '炎', light: '雷', holy: '聖' };
                         ['magic', 'fire', 'light', 'holy'].forEach(attr => {
                             const btn = document.getElementById(`btn-${group.id}-${rate}-${attr}`);
-                            const attrCount = rowS.filter(s => s.target === attr).length;
-                            const label = attr === 'magic' ? '魔' : attr === 'fire' ? '炎' : attr === 'light' ? '雷' : '聖';
-                            btn.innerText = attrCount > 0 ? `${label}×${attrCount}` : label;
+                            const mBtn = document.getElementById(`minus-${group.id}-${rate}-${attr}`);
+                            const attrCount = rowSelections.filter(s => s.target === attr).length;
+                            btn.innerText = attrCount > 0 ? `${attrLabels[attr]}×${attrCount}` : attrLabels[attr];
                             btn.className = `attr-btn-sm color-${attr} ${attrCount > 0 ? 'active-' + attr : ''}`;
                         });
+                    } else {
+                        const display = document.getElementById('count-' + group.id + '-' + rate);
+                        display.innerText = count === 0 ? '' : '×' + count;
+                        display.className = count > 0 ? 'text-[12px] font-black ml-1.5 w-6 theme-blue' : 'text-[12px] ml-1.5 w-6 text-slate-800';
                     }
+                    row.classList.toggle('duplicate-error', (group.type === 'limit' && duplicateRates.includes(rate) && count > 0));
                 });
             });
             calculateStats();
@@ -536,35 +485,33 @@
 
         function calculateStats() {
             if (isLiteMode) return;
-            const activeS = getActiveSelections();
+            const activeSelections = getActiveSelections();
             const stats = { phys: 1.0, magic: 1.0, fire: 1.0, light: 1.0, holy: 1.0 };
-            const effectiveS = [];
+            const effectiveSelections = [];
             const processedLimitRates = new Set();
-            let limit24Used = false;
 
-            activeS.forEach(s => {
+            activeSelections.forEach(s => {
                 if (s.type === 'limit') {
-                    if (s.rate === 24 && ['limit1', 'limit2', 'limit3'].includes(s.groupId)) {
-                        if (!limit24Used) { effectiveS.push(s); limit24Used = true; }
-                    } else if (!processedLimitRates.has(s.rate)) {
-                        effectiveS.push(s);
+                    if (!processedLimitRates.has(s.rate)) {
+                        effectiveSelections.push(s); 
                         processedLimitRates.add(s.rate);
                     }
-                } else { effectiveS.push(s); }
+                } else { effectiveSelections.push(s); }
             });
 
-            effectiveS.forEach(s => {
+            effectiveSelections.forEach(s => {
                 const multiplier = 1 - (s.rate / 100);
-                if (s.target === 'all') Object.keys(stats).forEach(k => stats[k] *= multiplier);
-                else if (s.target === 'elemental') ['magic','fire','light','holy'].forEach(k => stats[k] *= multiplier);
-                else stats[s.target] *= multiplier;
+                if (s.target === 'all') { Object.keys(stats).forEach(k => stats[k] *= multiplier); }
+                else if (s.target === 'elemental') { stats.magic *= multiplier; stats.fire *= multiplier; stats.light *= multiplier; stats.holy *= multiplier; }
+                else { stats[s.target] *= multiplier; }
             });
 
             const format = (val) => `${((1 - val) * 100).toFixed(1)}%`;
-            ['phys', 'magic', 'fire', 'light', 'holy'].forEach(k => {
-                const el = document.getElementById('stat-' + k);
-                if (el) el.innerText = format(stats[k]);
-            });
+            document.getElementById('stat-phys').innerText = format(stats.phys);
+            document.getElementById('stat-magic').innerText = format(stats.magic);
+            document.getElementById('stat-fire').innerText = format(stats.fire);
+            document.getElementById('stat-light').innerText = format(stats.light);
+            document.getElementById('stat-holy').innerText = format(stats.holy);
         }
 
         function resetAll() {
@@ -576,3 +523,4 @@
     </script>
 </body>
 </html>
+
