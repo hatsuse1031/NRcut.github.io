@@ -11,8 +11,11 @@
             color: #d1d9e6;
             font-family: 'serif';
             -webkit-tap-highlight-color: transparent;
+            /* スクロールを許可 */
+            overflow-y: auto;
             overflow-x: hidden;
-            min-height: 100vh;
+            margin: 0;
+            padding: 0;
         }
         /* NIGHTREIGN Blue Theme */
         .theme-blue {
@@ -25,7 +28,7 @@
             border: 2px solid transparent; 
             background-clip: padding-box;
             transition: all 0.2s ease;
-            min-height: 40px; 
+            min-height: 44px; 
         }
         .effect-row.normal-border {
             border-color: #1e293b;
@@ -40,8 +43,8 @@
             border-color: #ef4444 !important;
         }
         .control-btn {
-            width: 32px;
-            height: 32px;
+            width: 36px;
+            height: 36px;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -55,11 +58,11 @@
         /* 属性用小型ボタン */
         .attr-btn {
             flex-grow: 1;
-            min-width: 38px;
+            min-width: 40px;
             padding: 0 2px;
-            height: 30px;
-            font-size: 10px;
-            margin-left: 3px;
+            height: 32px;
+            font-size: 11px;
+            margin-left: 4px;
             font-weight: 900;
             white-space: nowrap;
             background-color: #0f172a;
@@ -130,10 +133,6 @@
             border-radius: 4px;
             transition: all 0.2s;
         }
-        .page-btn:active:not(:disabled) {
-            background-color: #4d98eb;
-            color: #fff;
-        }
 
         /* Modal Styles */
         #how-to-modal {
@@ -143,16 +142,16 @@
         .modal-content {
             background-color: #0a111a;
             border: 1px solid #4d98eb;
-            max-height: 90vh;
+            max-height: 85vh;
             overflow-y: auto;
         }
     </style>
 </head>
 <body class="p-2 sm:p-4">
 
-    <div class="max-w-md mx-auto flex flex-col min-h-screen">
-        <!-- Header / Stats -->
-        <header class="sticky top-0 z-50 bg-[#05070a] pb-2 border-b border-[#1e293b]">
+    <div class="max-w-md mx-auto relative">
+        <!-- Header / Stats (Sticky) -->
+        <header class="sticky top-0 z-50 bg-[#05070a] pt-2 pb-2 border-b border-[#1e293b]">
             <div class="flex justify-between items-center mb-1">
                 <h1 class="text-[11px] theme-blue uppercase tracking-[0.2em] font-bold">Nightreign Checker</h1>
                 <div class="flex items-center gap-1.5">
@@ -201,8 +200,8 @@
             </div>
         </header>
 
-        <!-- メインエリア: 下部に見切れ防止の余白を追加 -->
-        <main id="effect-groups" class="mt-3 grid grid-cols-2 gap-x-2 gap-y-3 pb-24">
+        <!-- メインエリア: pb-32で最下部の見切れを完全に防止 -->
+        <main id="effect-groups" class="mt-4 grid grid-cols-2 gap-x-2 gap-y-3 pb-32">
             <!-- Groups injected by JS -->
         </main>
     </div>
@@ -312,7 +311,7 @@
             currentPage = (currentPage === 0) ? 1 : 0;
             renderGroups();
             updateUI();
-            window.scrollTo({ top: 0, behavior: 'smooth' });
+            window.scrollTo({ top: 0, behavior: 'instant' });
         }
 
         function renderGroups() {
@@ -365,7 +364,7 @@
                         });
 
                         const minusBtn = document.createElement('button');
-                        minusBtn.className = 'control-btn attr-btn flex-none ml-1.5 bg-slate-900'; 
+                        minusBtn.className = 'control-btn attr-btn flex-none ml-2 bg-slate-900'; 
                         minusBtn.id = `minus-${group.id}-${rate}`;
                         minusBtn.innerText = '−';
                         minusBtn.onclick = () => removeLastFromRow(group.id, rate);
